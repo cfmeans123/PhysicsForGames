@@ -141,13 +141,13 @@ namespace jm::math
 	template <typename T>
 	matrix44<T> camera3<T>::get_perspective_transform() const
 	{
-		return perspective_matrix(vert_fov, aspect, 0.1f);
+		return perspective_projection_matrix(vert_fov, aspect, 0.1f);
 	}
-
+	
 	template <typename T>
 	matrix44<T> camera3<T>::get_orthogonal_transform() const
 	{
 		vector2<T> farHalfSize = focal_distance * vector2<T>{ half_width, half_height };
-		return orthogonal_matrix(-farHalfSize.x, farHalfSize.x, -farHalfSize.y, farHalfSize.y, 0.001f, 1000.0f);
+		return orthogonal_projection_matrix(-farHalfSize.x, farHalfSize.x, -farHalfSize.y, farHalfSize.y, 0.001f, 1000.0f);
 	}
 }

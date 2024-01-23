@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform/Singleton.h"
+#include "Visual/OpenGL/OpenGL.h"
 
 namespace jm
 {

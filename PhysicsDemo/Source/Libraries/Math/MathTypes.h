@@ -6,6 +6,9 @@
 #define GLM_FORCE_SILENT_WARNINGS
 
 #include "glm/glm.hpp"
+#include "glm/gtx/matrix_operation.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
 
 namespace jm::math
 {
@@ -75,4 +78,58 @@ namespace jm::math
 
 	using glm::length;
 	using glm::radians;
+
+	template <typename T>
+	vector3<T> cartesian_from_spherical(T radius, T theta, T phi)
+	{
+		return radius * vector3<T>(sin(phi) * sin(theta), cos(phi), sin(phi) * cos(theta));
+	}
+
+	template <size_t D, typename T>
+	T angle(vectorN<D, T> const& a, vectorN<D, T> const& b)
+	{
+		return std::acos(dot(a, b) / (length(a) * length(b)));
+	}
+
+	template <typename T, typename V>
+	V lerp(T t, V const& a, V const& b)
+	{
+		return t * b + (T(1) - t) * a;
+	}
+
+	template <typename T, typename V>
+	V lerp(T t, V const& a, V const& b, V const& c)
+	{
+		return lerp(t, lerp(t, a, b), lerp(t, b, c));
+	}
+
+	template <typename T, typename V>
+	V lerp(T t, V const& a, V const& b, V const& c, V const& d)
+	{
+		return lerp(t, lerp(t, a, b, c), lerp(t, b, c, d));
+	}
+
+	template <typename T, typename V>
+	V lerp(T t, V const& a, V const& b, V const& c, V const& d, V const& e)
+	{
+		return lerp(t, lerp(t, a, b, c, d), lerp(t, b, c, d, e));
+	}
+
+	template <typename T>
+	matrix44<T> translation_matrix3(vector3<T> const& translation)
+	{
+		return glm::translate(glm::identity<matrix44<T>>(), translation);
+	}
+
+	template <typename T>
+	matrix44<T> orthogonal_projection_matrix(T left, T right, T bottom, T top, T zNear, T zFar)
+	{
+		return glm::orthoRH(left, right, bottom, top, zNear, zFar);
+	}
+
+	template <typename T>
+	matrix44<T> perspective_projection_matrix(T yFOV, T aspectRatio, T zNear)
+	{
+		return glm::infinitePerspectiveRH(yFOV, aspectRatio, zNear);
+	}
 }

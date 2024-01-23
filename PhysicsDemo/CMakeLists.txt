@@ -183,6 +183,8 @@ set( VisualSourceList
 "${VISUAL_MODULE_DIR}/RenderingContext.cpp"
 "${VISUAL_MODULE_DIR}/RenderingContext.h"
 "${VISUAL_MODULE_DIR}/Visual.cpp"
+"${VISUAL_MODULE_DIR}/VisualGeometry.h"
+"${VISUAL_MODULE_DIR}/VisualGeometry.cpp"
 "${VISUAL_MODULE_DIR}/Visual.h"
 "${VISUAL_MODULE_DIR}/VisualDebug.h"
 "${VISUAL_MODULE_DIR}/MeshData.cpp"
@@ -202,23 +204,26 @@ set_target_properties(Visual PROPERTIES
 )
 target_link_libraries(Visual PUBLIC Math Platform ImGui)
 
-#======================Systems
+#=======================Systems
 
 set(SYSTEMS_MODULE_DIR "${LIB_PATH}/Systems")
-set( SystemSourceList
+set( SystemsSourceList
 "${SYSTEMS_MODULE_DIR}/Graphics.cpp"
 "${SYSTEMS_MODULE_DIR}/Graphics.h"
+"${SYSTEMS_MODULE_DIR}/Entity.cpp"
+"${SYSTEMS_MODULE_DIR}/Entity.h"
 )
 
-add_library(Systems ${SystemSourceList})
+add_library(Systems ${SystemsSourceList})
 target_include_directories(Systems PUBLIC "${SYSTEMS_MODULE_DIR}")
 target_compile_features(Systems PUBLIC cxx_std_20)
 target_compile_options(Systems PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>, /W4 /WX,-Wall -Wextra -Wpedantic -Werror>)
-source_group(TREE "${SYSTEMS_MODULE_DIR}" FILES ${SystemSourceList})
+source_group(TREE "${SYSTEMS_MODULE_DIR}" FILES ${SystemsSourceList})
 set_target_properties(Systems PROPERTIES
 	FOLDER "Libraries"
 )
 target_link_libraries(Systems PUBLIC Math Platform Visual entt)
+
 #=======================#====EXECUTABLES=====#=======================
 #=======================PhysicsDemo
 
@@ -236,7 +241,7 @@ set_target_properties(PhysicsDemo PROPERTIES
 	FOLDER "Executables"
 )
 target_link_libraries(PhysicsDemo
-	PRIVATE Platform Math Visual EnTT::EnTT
+	PRIVATE Platform Math Visual Systems
 )
 
 if ( MSVC )

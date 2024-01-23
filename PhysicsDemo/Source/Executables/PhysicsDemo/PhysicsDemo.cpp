@@ -6,6 +6,9 @@
 #include "Platform/Tactual.h"
 #include "Platform/WindowedApplication.h"
 
+#include "Systems/Entity.h"
+#include "Systems/Graphics.h"
+
 #include "DearImGui/imgui.h"
 
 namespace jm
@@ -34,7 +37,9 @@ namespace jm
 			: Platform::WindowedApplication(context, { "3D", { 50 , 50 }, { screenSize.x, screenSize.y } })
 			, Camera(Make3DCamera(10.0f, 45.0f, window->GetArea().GetAspectRatio()))
 			, ClearColour({ 0.2f, 0.3f, 0.3f })
+			, registry()
 			, InputSystem()
+			, GraphicsSystem(*window, registry)
 		{
 		}
 
@@ -42,6 +47,7 @@ namespace jm
 
 		virtual void OnStartLoop() override
 		{
+			AddMessageHandler(GraphicsSystem.GetMessageHandler());
 			AddMessageHandler(InputSystem.GetMessageHandler());
 		}
 
@@ -49,12 +55,15 @@ namespace jm
 		{
 			InputSystem.Update();
 
+			GraphicsSystem.Draw3D(Camera, ClearColour, []() {});
+
 			Running = !InputSystem.GetKeyboard().EscPressed;
 		}
 
 		virtual void OnStopLoop() override
 		{
 			RemoveMessageHandler(InputSystem.GetMessageHandler());
+			RemoveMessageHandler(GraphicsSystem.GetMessageHandler());
 		}
 
 		void HandleException(const std::exception& applicationException)
@@ -62,10 +71,13 @@ namespace jm
 			JM_HALT("Application", applicationException.what());
 		}
 
+		entity_registry registry;
+
 		math::camera3<f32> Camera;
 		math::vector3_f32 ClearColour;
 
 		Tactual::System InputSystem;
+		System::Graphics GraphicsSystem;
 	};
 }
 
