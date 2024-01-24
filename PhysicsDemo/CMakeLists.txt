@@ -212,6 +212,7 @@ set( SystemsSourceList
 "${SYSTEMS_MODULE_DIR}/Graphics.h"
 "${SYSTEMS_MODULE_DIR}/Entity.cpp"
 "${SYSTEMS_MODULE_DIR}/Entity.h"
+"${SYSTEMS_MODULE_DIR}/Components.h"
 )
 
 add_library(Systems ${SystemsSourceList})

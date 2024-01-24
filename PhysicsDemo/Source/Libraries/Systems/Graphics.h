@@ -25,6 +25,7 @@ namespace jm::System
 		OpenGL::InputLayoutHandle inputLayoutHandle;
 		OpenGL::InputBufferHandle inputBufferHandle;
 		GLsizei cubeVertices;
+		GLsizei axesVertices;
 
 	public:
 		Graphics(Platform::Window& window, entity_registry& registry);

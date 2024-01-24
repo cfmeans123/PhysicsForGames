@@ -74,6 +74,10 @@ namespace jm::math
 	constexpr vector2_f32 zero2{ 0.f };
 	constexpr vector3_f32 zero3{ 0.f };
 
+	constexpr matrix44_f32 identity2 = glm::identity<matrix22_f32>();
+	constexpr matrix44_f32 identity3 = glm::identity<matrix33_f32>();
+	constexpr matrix44_f32 identity4 = glm::identity<matrix44_f32>();
+
 	constexpr f32 epsilon_f32 = math::epsilon<f32>();
 
 	using glm::length;

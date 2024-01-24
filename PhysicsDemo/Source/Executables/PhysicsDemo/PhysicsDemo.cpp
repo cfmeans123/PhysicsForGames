@@ -8,6 +8,7 @@
 
 #include "Systems/Entity.h"
 #include "Systems/Graphics.h"
+#include "Systems/Components.h"
 
 #include "DearImGui/imgui.h"
 
@@ -41,6 +42,7 @@ namespace jm
 			, InputSystem()
 			, GraphicsSystem(*window, registry)
 		{
+			Timer.Initialize();
 		}
 
 		virtual ~PhysicsDemo() override = default;
@@ -49,11 +51,14 @@ namespace jm
 		{
 			AddMessageHandler(GraphicsSystem.GetMessageHandler());
 			AddMessageHandler(InputSystem.GetMessageHandler());
+			
+			CreateWorld();
 		}
 
 		virtual void RunLoop() override
 		{
-			InputSystem.Update();
+			Timer.Update();
+			InputUpdate();
 
 			GraphicsSystem.Draw3D(Camera, ClearColour, []() {});
 
@@ -62,6 +67,8 @@ namespace jm
 
 		virtual void OnStopLoop() override
 		{
+			DestroyWorld();
+			
 			RemoveMessageHandler(InputSystem.GetMessageHandler());
 			RemoveMessageHandler(GraphicsSystem.GetMessageHandler());
 		}
@@ -70,6 +77,44 @@ namespace jm
 		{
 			JM_HALT("Application", applicationException.what());
 		}
+
+		void CreateWorld()
+		{
+			entity_id entity0 = registry.create();
+
+			registry.emplace<spatial3_component>(entity0, math::vector3_f32(0.0f, 0.0f, 1.0f));
+		}
+
+		void DestroyWorld()
+		{
+			registry.clear();
+		}
+
+		void InputUpdate()
+		{
+			const bool shiftPressed = InputSystem.GetKeyboard().ShiftPressed;
+			const float cameraTranslatSpeed = (shiftPressed ? 3.0f : 1.5f) * float(Timer.GetElapsedTime());
+			const float cameraRotateSpeed = float(Timer.GetElapsedTime());
+
+			if (InputSystem.GetKeyboard().WPressed)
+			{
+				Camera.translate(cameraTranslatSpeed * Camera.get_forward());
+			}
+			if (InputSystem.GetKeyboard().SPressed)
+			{
+				Camera.translate(cameraTranslatSpeed * Camera.get_back());
+			}
+			if (InputSystem.GetKeyboard().APressed)
+			{
+				Camera.translate(cameraTranslatSpeed * Camera.get_left());
+			}
+			if (InputSystem.GetKeyboard().DPressed)
+			{
+				Camera.translate(cameraTranslatSpeed * Camera.get_right());
+			}
+			InputSystem.Update();
+		}
+		Platform::Timer Timer;
 
 		entity_registry registry;
 
