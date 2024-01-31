@@ -12,6 +12,8 @@
 
 #include "DearImGui/imgui.h"
 
+#include "World.h"
+
 namespace jm
 {
 	constexpr math::vector2<iSize> screenSize = { 1600, 900 };
@@ -80,9 +82,7 @@ namespace jm
 
 		void CreateWorld()
 		{
-			entity_id entity0 = registry.create();
-
-			registry.emplace<spatial3_component>(entity0, math::vector3_f32(0.0f, 0.0f, 1.0f));
+			CreateBasicWorld(registry);
 		}
 
 		void DestroyWorld()
@@ -112,6 +112,23 @@ namespace jm
 			{
 				Camera.translate(cameraTranslatSpeed * Camera.get_right());
 			}
+			if (InputSystem.GetKeyboard().UpPressed)
+			{
+				Camera.rotate(0.0f, cameraRotateSpeed);
+			}
+			if (InputSystem.GetKeyboard().DownPressed)
+			{
+				Camera.rotate(0.0f, -cameraRotateSpeed);
+			}
+			if (InputSystem.GetKeyboard().RightPressed)
+			{
+				Camera.rotate(cameraRotateSpeed, 0.0f);
+			}
+			if (InputSystem.GetKeyboard().LeftPressed)
+			{
+				Camera.rotate(-cameraRotateSpeed, 0.0f);
+			}
+
 			InputSystem.Update();
 		}
 		Platform::Timer Timer;

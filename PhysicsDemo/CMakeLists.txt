@@ -155,6 +155,8 @@ set( MathSourceList
 "${MATH_MODULE_DIR}/Graph.h"
 "${MATH_MODULE_DIR}/Camera.h"
 "${MATH_MODULE_DIR}/Random.cpp"
+"${MATH_MODULE_DIR}/Random.h"
+"${MATH_MODULE_DIR}/Physics.h"
 )
 
 add_library(Math ${MathSourceList})
@@ -213,6 +215,8 @@ set( SystemsSourceList
 "${SYSTEMS_MODULE_DIR}/Entity.cpp"
 "${SYSTEMS_MODULE_DIR}/Entity.h"
 "${SYSTEMS_MODULE_DIR}/Components.h"
+"${SYSTEMS_MODULE_DIR}/Collision.h"
+"${SYSTEMS_MODULE_DIR}/Collision.cpp"
 )
 
 add_library(Systems ${SystemsSourceList})
@@ -231,6 +235,8 @@ target_link_libraries(Systems PUBLIC Math Platform Visual entt)
 set(PHYSICSDEMO_MODULE_DIR "${EXECUTABLES_PATH}/PhysicsDemo")
 set( PhysicsDemoSourceList
 	"${PHYSICSDEMO_MODULE_DIR}/PhysicsDemo.cpp"
+	"${PHYSICSDEMO_MODULE_DIR}/World.cpp"
+	"${PHYSICSDEMO_MODULE_DIR}/World.h"
 )
 
 add_executable(PhysicsDemo ${PhysicsDemoSourceList})

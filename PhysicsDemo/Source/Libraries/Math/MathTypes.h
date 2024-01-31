@@ -9,6 +9,7 @@
 #include "glm/gtx/matrix_operation.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
+#include "glm/gtx/quaternion.hpp"
 
 namespace jm::math
 {
@@ -19,6 +20,8 @@ namespace jm::math
 	using matrix22_f32 = glm::f32mat2x2;
 	using matrix33_f32 = glm::f32mat3x3;
 	using matrix44_f32 = glm::f32mat4x4;
+
+	using quaternion_f32 = glm::f32quat;
 
 	using colour3_f32 = vector3_f32;
 
@@ -40,6 +43,9 @@ namespace jm::math
 	using matrix33 = glm::tmat3x3<T>;
 	template <typename T>
 	using matrix44 = glm::tmat4x4<T>;
+
+	template <typename T>
+	using quaternion = glm::tquat<T>;
 
 #define JM_DefineArithmeticScalarConstant(name, fxn) \
 	template <typename T> \
@@ -78,10 +84,15 @@ namespace jm::math
 	constexpr matrix44_f32 identity3 = glm::identity<matrix33_f32>();
 	constexpr matrix44_f32 identity4 = glm::identity<matrix44_f32>();
 
+	constexpr quaternion_f32 identityH = glm::quat_identity<f32, glm::defaultp>();
+
 	constexpr f32 epsilon_f32 = math::epsilon<f32>();
 
 	using glm::length;
 	using glm::radians;
+	using glm::angle;
+	using glm::axis;
+	using glm::angleAxis;
 
 	template <typename T>
 	vector3<T> cartesian_from_spherical(T radius, T theta, T phi)
@@ -123,6 +134,13 @@ namespace jm::math
 	matrix44<T> translation_matrix3(vector3<T> const& translation)
 	{
 		return glm::translate(glm::identity<matrix44<T>>(), translation);
+	}
+
+	template <typename T>
+	matrix44<T> isometry_matrix3(vector3<T> const& translation, quaternion<T> const& rotation)
+	{
+		matrix44<T> rotationMatrix = glm::mat3_cast(rotation);
+		return glm::translate(rotationMatrix, translation);
 	}
 
 	template <typename T>

@@ -47,6 +47,11 @@ namespace jm::System
 			cubeVertices = static_cast<GLsizei>(cubeVertexData.size);
 		}
 		{
+			auto sphereVertexData = Visual::GenerateSphere(layout);
+			inputVertexData.insert(inputVertexData.end(), sphereVertexData.data.begin(), sphereVertexData.data.end());
+			sphereVertices = static_cast<GLsizei>(sphereVertexData.size);
+		}
+		{
 			auto axesData = Visual::GenerateCoordinateAxes3(layout);
 			inputVertexData.insert(inputVertexData.end(), axesData.data.begin(), axesData.data.end());
 			axesVertices = static_cast<GLsizei>(axesData.size);
@@ -71,12 +76,21 @@ namespace jm::System
 
 	void Graphics::Draw3D(math::camera3<f32> const& camera, math::vector3_f32 const& clearColour, std::function<void()> && imguiFrame)
 	{
-		auto spatial_shape_view = EntityRegistry.view<const spatial3_component>();
+		auto spatial_shape_view = EntityRegistry.view<const spatial3_component, const shape_component>();
 
 		std::vector<math::matrix44_f32> CubeInstances;
-		for (auto&& [entity, spatial] : spatial_shape_view.each())
+		std::vector<math::matrix44_f32> SphereInstances;
+		for (auto&& [entity, spatial, shape] : spatial_shape_view.each())
 		{
-			CubeInstances.push_back(math::translation_matrix3(spatial.position));
+			switch (shape)
+			{
+			case shape_component::Sphere:
+				SphereInstances.push_back(math::isometry_matrix3(spatial.position, spatial.rotation));
+				break;
+			default:  //box
+				CubeInstances.push_back(math::isometry_matrix3(spatial.position, spatial.rotation));
+				break;
+			}
 		}
 
 
@@ -93,6 +107,13 @@ namespace jm::System
 				glDrawArrays(GL_TRIANGLES, start, cubeVertices);
 			}
 			start += cubeVertices;
+
+			for (math::matrix44_f32& instance : SphereInstances)
+			{
+				Program.SetUniform("model", instance);
+				glDrawArrays(GL_TRIANGLES, start, sphereVertices);
+			}
+			start += sphereVertices;
 
 			Program.SetUniform("model", math::identity4);
 			glDrawArrays(GL_LINES, start, axesVertices);
