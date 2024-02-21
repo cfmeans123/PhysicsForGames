@@ -214,6 +214,8 @@ set( SystemsSourceList
 "${SYSTEMS_MODULE_DIR}/Graphics.h"
 "${SYSTEMS_MODULE_DIR}/Entity.cpp"
 "${SYSTEMS_MODULE_DIR}/Entity.h"
+"${SYSTEMS_MODULE_DIR}/Simulation.h"
+"${SYSTEMS_MODULE_DIR}/Simulation.cpp"
 "${SYSTEMS_MODULE_DIR}/Components.h"
 "${SYSTEMS_MODULE_DIR}/Collision.h"
 "${SYSTEMS_MODULE_DIR}/Collision.cpp"
